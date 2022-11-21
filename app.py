@@ -1,33 +1,53 @@
-from xlrd import open_workbook
-import pandas as pd
-from order_page import create_page
-from order_page import create_item
+from openpyxl import load_workbook
+wb = load_workbook("Listado paneles.xlsx")
 
+# grab the active worksheet
+ws = wb.active
 
-wb = open_workbook('Libro1.xlsx')
-sheet = wb.sheet_by_index(0)
+co = ws["A2"].value
+line = ws["B3"].value
+qty = 0
 
-df = pd.read_excel('Libro1.xlsx', usecols=[2,5,6,7,8])
+print(f"{co}-{line}")
 
-co = int(sheet.cell_value(1, 0))
-line = int(sheet.cell_value(1, 1))
-
-order = f"{co}-{line}"
-
-id_database = create_page(order)
-
-print(">>>" + str(id_database))
-
-
-for index, row in df.iterrows():
+for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     
-    mo = row[0]
-    itemNo = str(row[1])
-    itemName = str(row[2])
-    itemDesc = row[3]
-    qty = row[4]
+  if row[0].value != co or row[1].value != line: 
     
-    create_item(database=id_database, name=itemName, item=itemNo, desc=itemDesc, mo=mo)
+    print(f"{row[0].value}-{row[1].value}")
+    
+    co = row[0].value
+    line = row[1].value
+    qty = qty + 1
+    
+    wb_panels = load_workbook("Plantilla Paneles.xlsx")
+    
+    ws_panels = wb_panels.active
+    
+    ws_panels["B2"].value = f"{row[0].value}-{row[1].value}"
+    
+    wb_panels.save(f"{row[0].value}-{row[1].value}.xlsx")
+
+
+  name = row[3].value
+  cant = row[4].value
+  print(f"  {name} >>> {cant}")
+  
+      
+    
+
+    
+    
+    
+
+    
+print(f"TOTAL = {qty}")
+    
+
+
+
+
+
 
     
  
