@@ -60,14 +60,23 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     ws_panels.cell(row=11 + row_counter, column=2, 
                                value=row[2].value).alignment=cell_alignment
     ws_panels.cell(row=11 + row_counter, column=2).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=3).border = thin_border
+
     
     ws_panels.cell(row=11 + row_counter, column=4,
                    value=row[3].value).alignment = cell_alignment
     ws_panels.cell(row=11 + row_counter, column=4).border=thin_border
-    
+    ws_panels.cell(row=11 + row_counter, column=5).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=6).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=7).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=8).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=9).border = thin_border
+
     ws_panels.cell(row=11 + row_counter, column=10,
                    value=row[4].value).alignment = cell_alignment
     ws_panels.cell(row=11 + row_counter, column=10).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=11).border = thin_border
+
     
     ws_panels.cell(row=11 + row_counter, column=12,
                    value=" ").border=thin_border
