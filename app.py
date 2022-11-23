@@ -1,4 +1,8 @@
 from openpyxl import load_workbook
+from openpyxl.styles.borders import Border, Side
+from openpyxl.styles import Alignment, NamedStyle
+
+
 
 class Panel:
     def __init__(self, item, name, qty):
@@ -34,11 +38,43 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
         ws_panels = wb_panels.active
         ws_panels["B2"].value = f"{co}-{line}"
         row_counter = 0
+        
+    ws_panels.merge_cells(start_row=11 + row_counter,
+                          start_column=2, end_row=11 + row_counter, end_column=3)
+    
+    ws_panels.merge_cells(start_row=11 + row_counter,
+                          start_column=4, end_row=11 + row_counter, end_column=9)
+    
+    ws_panels.merge_cells(start_row=11 + row_counter,
+                          start_column=10, end_row=11 + row_counter, end_column=11)
 
+    thin_border = Border(left=Side(style='thin'),
+                         right=Side(style='thin'),
+                         top=Side(style='thin'),
+                         bottom=Side(style='thin'))
+    
+    cell_alignment = Alignment(horizontal="center", vertical="center")
+    
+    
+    
+    ws_panels.cell(row=11 + row_counter, column=2, 
+                               value=row[2].value).alignment=cell_alignment
+    ws_panels.cell(row=11 + row_counter, column=2).border = thin_border
+    
+    ws_panels.cell(row=11 + row_counter, column=4,
+                   value=row[3].value).alignment = cell_alignment
+    ws_panels.cell(row=11 + row_counter, column=4).border=thin_border
+    
+    ws_panels.cell(row=11 + row_counter, column=10,
+                   value=row[4].value).alignment = cell_alignment
+    ws_panels.cell(row=11 + row_counter, column=10).border = thin_border
+    
+    ws_panels.cell(row=11 + row_counter, column=12,
+                   value=" ").border=thin_border
+    
+    
+    
 
-    ws_panels.cell(row=11 + row_counter, column=2, value=row[2].value)
-    ws_panels.cell(row=11 + row_counter, column=4, value=row[3].value)
-    ws_panels.cell(row=11 + row_counter, column=10, value=row[4].value)
     
     row_counter = row_counter + 1
 
