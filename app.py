@@ -1,15 +1,6 @@
 from openpyxl import load_workbook
 from openpyxl.styles.borders import Border, Side
-from openpyxl.styles import Alignment, NamedStyle
-
-
-
-class Panel:
-    def __init__(self, item, name, qty):
-        self.item = item
-        self.name = name
-        self.qty = qty
-
+from openpyxl.styles import Alignment
 
 wb = load_workbook("Listado paneles.xlsx")
 
@@ -80,15 +71,9 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     
     ws_panels.cell(row=11 + row_counter, column=12,
                    value=" ").border=thin_border
-    
-    
-    
-
-    
+        
     row_counter = row_counter + 1
 
-    wb_panels.save(f"{row[0].value}-{row[1].value}.xlsx")
+    wb_panels.save(f"{row[0].value}-{row[1].value}-PANELES.xlsx")
     
-
-
 print(f"TOTAL = {qty}")
