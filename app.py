@@ -1,6 +1,6 @@
 from openpyxl import load_workbook
 from openpyxl.styles.borders import Border, Side
-from openpyxl.styles import Alignment
+from openpyxl.styles import Alignment, PatternFill, Font
 
 wb = load_workbook("Listado paneles.xlsx")
 
@@ -35,14 +35,13 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     
     ws_panels.merge_cells(start_row=11 + row_counter,
                           start_column=4, end_row=11 + row_counter, end_column=9)
-    
-    ws_panels.merge_cells(start_row=11 + row_counter,
-                          start_column=10, end_row=11 + row_counter, end_column=11)
 
     thin_border = Border(left=Side(style='thin'),
                          right=Side(style='thin'),
                          top=Side(style='thin'),
                          bottom=Side(style='thin'))
+
+    my_fill = PatternFill(start_color="d3d3d3", end_color="d3d3d3", fill_type="solid")
     
     cell_alignment = Alignment(horizontal="center", vertical="center")
     
@@ -53,6 +52,29 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     ws_panels.cell(row=11 + row_counter, column=2).border = thin_border
     ws_panels.cell(row=11 + row_counter, column=3).border = thin_border
 
+    if (str(row[2].value).__contains__("S")):
+        ws_panels.cell(row=11 + row_counter, column=2).fill= my_fill
+        ws_panels.cell(row=11 + row_counter, column=3).fill= my_fill
+        ws_panels.cell(row=11 + row_counter, column=4).fill= my_fill
+        ws_panels.cell(row=11 + row_counter, column=5).fill= my_fill
+        ws_panels.cell(row=11 + row_counter, column=6).fill= my_fill
+        ws_panels.cell(row=11 + row_counter, column=7).fill= my_fill
+        ws_panels.cell(row=11 + row_counter, column=8).fill= my_fill
+        ws_panels.cell(row=11 + row_counter, column=9).fill= my_fill
+        ws_panels.cell(row=11 + row_counter, column=10).fill= my_fill
+        ws_panels.cell(row=11 + row_counter, column=11).fill= my_fill
+        ws_panels.cell(row=11 + row_counter, column=12).fill= my_fill
+
+    if (str(row[2].value).__contains__("503")):
+        ws_panels.cell(row=11 + row_counter, column=2).font = Font (bold=True)
+        ws_panels.cell(row=11 + row_counter, column=2).font = Font(size = "18")
+                               
+        ws_panels.cell(row=11 + row_counter, column=4).font = Font (bold=True)
+        ws_panels.cell(row=11 + row_counter, column=4).font = Font(size = "18")
+
+        ws_panels.cell(row=11 + row_counter, column=10).font = Font (bold=True)
+        ws_panels.cell(row=11 + row_counter, column=10).font = Font(size = "18")
+
     
     ws_panels.cell(row=11 + row_counter, column=4,
                    value=row[3].value).alignment = cell_alignment
@@ -62,12 +84,13 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     ws_panels.cell(row=11 + row_counter, column=7).border = thin_border
     ws_panels.cell(row=11 + row_counter, column=8).border = thin_border
     ws_panels.cell(row=11 + row_counter, column=9).border = thin_border
-
+        
     ws_panels.cell(row=11 + row_counter, column=10,
                    value=row[4].value).alignment = cell_alignment
     ws_panels.cell(row=11 + row_counter, column=10).border = thin_border
     ws_panels.cell(row=11 + row_counter, column=11).border = thin_border
 
+    
     
     ws_panels.cell(row=11 + row_counter, column=12,
                    value=" ").border=thin_border
