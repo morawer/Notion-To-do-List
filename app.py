@@ -1,6 +1,7 @@
 from openpyxl import load_workbook
 from openpyxl.styles.borders import Border, Side
 from openpyxl.styles import Alignment, PatternFill, Font
+import time
 
 wb = load_workbook("Listado paneles.xlsx")
 
@@ -13,6 +14,8 @@ qty = 0
 row_counter = 0
 
 panels_array = []
+
+starting_point = time.time()
 
 for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
 
@@ -46,7 +49,6 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     cell_alignment = Alignment(horizontal="center", vertical="center")
     
     
-    
     ws_panels.cell(row=11 + row_counter, column=2, 
                                value=row[2].value).alignment=cell_alignment
     ws_panels.cell(row=11 + row_counter, column=2).border = thin_border
@@ -64,16 +66,26 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
         ws_panels.cell(row=11 + row_counter, column=10).fill= my_fill
         ws_panels.cell(row=11 + row_counter, column=11).fill= my_fill
         ws_panels.cell(row=11 + row_counter, column=12).fill= my_fill
+        
 
-    if (str(row[2].value).__contains__("503")):
-        ws_panels.cell(row=11 + row_counter, column=2).font = Font (bold=True)
-        ws_panels.cell(row=11 + row_counter, column=2).font = Font(size = "18")
+    if (str(row[2].value)[0:3] == "503"):
+        ws_panels.cell(row=11 + row_counter, column=2).font = Font(size = 18, bold=True)
                                
-        ws_panels.cell(row=11 + row_counter, column=4).font = Font (bold=True)
-        ws_panels.cell(row=11 + row_counter, column=4).font = Font(size = "18")
+        ws_panels.cell(row=11 + row_counter, column=4).font = Font(size=18, bold=True)
+        
+        ws_panels.cell(row=11 + row_counter,
+                       column=10).font = Font(size=18, bold=True)
+        
+        
+    if (str(row[2].value)[0:3] == "506"):
+        ws_panels.cell(row=11 + row_counter,
+                       column=2).font = Font(size=18, underline="single", )
 
-        ws_panels.cell(row=11 + row_counter, column=10).font = Font (bold=True)
-        ws_panels.cell(row=11 + row_counter, column=10).font = Font(size = "18")
+        ws_panels.cell(row=11 + row_counter,
+                       column=4).font = Font(size=18, underline="single")
+
+        ws_panels.cell(row=11 + row_counter,
+                       column=10).font = Font(size=18, underline="single")
 
     
     ws_panels.cell(row=11 + row_counter, column=4,
@@ -99,4 +111,11 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
 
     wb_panels.save(f"{row[0].value}-{row[1].value}-PANELES.xlsx")
     
+    
+elapsed_time = time.time() - starting_point
+elapsed_time_int = int(elapsed_time)
+elapsed_time_minutes = elapsed_time_int / 60 
+elapsed_time_seconds = elapsed_time_int % 60
+
 print(f"TOTAL = {qty}")
+print(f"Done in {elapsed_time_minutes:.0f} minutes and {elapsed_time_seconds} seconds.")
