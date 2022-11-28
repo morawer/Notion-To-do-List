@@ -12,6 +12,7 @@ co = 0
 line = 0
 qty = 0
 row_counter = 0
+id_line = 0
 
 panels_array = []
 
@@ -51,10 +52,40 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     
     ws_panels.cell(row=11 + row_counter, column=2, 
                                value=row[2].value).alignment=cell_alignment
+    ws_panels.cell(row=11 + row_counter, column=4,
+                   value=row[3].value).alignment = cell_alignment
+    ws_panels.cell(row=11 + row_counter, column=10,
+                   value=row[4].value).alignment = cell_alignment
+
     ws_panels.cell(row=11 + row_counter, column=2).border = thin_border
     ws_panels.cell(row=11 + row_counter, column=3).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=4).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=5).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=6).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=7).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=8).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=9).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=10).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=11).border = thin_border
+    ws_panels.cell(row=11 + row_counter, column=12).border = thin_border
+
 
     if (str(row[2].value).__contains__("S")):
+        id_line = 1
+
+    if (str(row[2].value)[0:3] == "503"):
+        id_line = 2        
+        
+    if (str(row[2].value)[0:3] == "506"):
+        id_line = 3
+
+    if (str(row[2].value)[0:2] != "50"):
+        id_line = 5
+
+    if (str(row[2].value)[0:3] == "500") and not (str(row[2].value).__contains__("S")):
+        id_line = 6
+
+    if (id_line%2 != 0):
         ws_panels.cell(row=11 + row_counter, column=2).fill= my_fill
         ws_panels.cell(row=11 + row_counter, column=3).fill= my_fill
         ws_panels.cell(row=11 + row_counter, column=4).fill= my_fill
@@ -67,49 +98,13 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
         ws_panels.cell(row=11 + row_counter, column=11).fill= my_fill
         ws_panels.cell(row=11 + row_counter, column=12).fill= my_fill
         
-
-    if (str(row[2].value)[0:3] == "503"):
-        ws_panels.cell(row=11 + row_counter, column=2).font = Font(size = 18, bold=True)
-                               
-        ws_panels.cell(row=11 + row_counter, column=4).font = Font(size=18, bold=True)
-        
-        ws_panels.cell(row=11 + row_counter,
-                       column=10).font = Font(size=18, bold=True)
-        
-        
-    if (str(row[2].value)[0:3] == "506"):
-        ws_panels.cell(row=11 + row_counter,
-                       column=2).font = Font(size=18, underline="single", )
-
-        ws_panels.cell(row=11 + row_counter,
-                       column=4).font = Font(size=18, underline="single")
-
-        ws_panels.cell(row=11 + row_counter,
-                       column=10).font = Font(size=18, underline="single")
-
-    
-    ws_panels.cell(row=11 + row_counter, column=4,
-                   value=row[3].value).alignment = cell_alignment
-    ws_panels.cell(row=11 + row_counter, column=4).border=thin_border
-    ws_panels.cell(row=11 + row_counter, column=5).border = thin_border
-    ws_panels.cell(row=11 + row_counter, column=6).border = thin_border
-    ws_panels.cell(row=11 + row_counter, column=7).border = thin_border
-    ws_panels.cell(row=11 + row_counter, column=8).border = thin_border
-    ws_panels.cell(row=11 + row_counter, column=9).border = thin_border
-        
-    ws_panels.cell(row=11 + row_counter, column=10,
-                   value=row[4].value).alignment = cell_alignment
-    ws_panels.cell(row=11 + row_counter, column=10).border = thin_border
-    ws_panels.cell(row=11 + row_counter, column=11).border = thin_border
-
-    
-    
-    ws_panels.cell(row=11 + row_counter, column=12,
-                   value=" ").border=thin_border
-        
     row_counter = row_counter + 1
 
-    wb_panels.save(f"{row[0].value}-{row[1].value}-PANELES.xlsx")
+    try:
+        wb_panels.save(f"{row[0].value}-{row[1].value}-PANELES.xlsx")
+
+    except:
+        print(f"{row[0].value}-{row[1].value} --- ERROR")
     
     
 elapsed_time = time.time() - starting_point
