@@ -2,8 +2,18 @@ from openpyxl import load_workbook
 from openpyxl.styles.borders import Border, Side
 from openpyxl.styles import Alignment, PatternFill, Font
 import time
+import tkinter as tk 
+from tkinter import filedialog
 
-wb = load_workbook("Listado paneles.xlsx")
+def fileSelection():
+    root = tk.Tk()
+    root.withdraw()
+    file_path = filedialog.askopenfilename()
+    return file_path
+
+excel = fileSelection()
+
+wb = load_workbook(excel)
 
 # grab the active worksheet
 ws = wb.active
@@ -14,15 +24,23 @@ qty = 0
 row_counter = 0
 id_line = 0
 
+
 panels_array = []
 
 starting_point = time.time()
 
 for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
+    
+    item_value = str(row[2].value)
+    name_value = row[3].value
+    qty_value = row[4].value
 
-    if (row[0].value != co or row[1].value != line):
+    co_value = row[0].value
+    line_value = row[1].value
+    
+    if (co_value != co or line_value != line):
 
-        print(f"{row[0].value}-{row[1].value}")
+        print(f"{co_value}-{line_value}")
 
         co = row[0].value
         line = row[1].value
@@ -50,12 +68,13 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     cell_alignment = Alignment(horizontal="center", vertical="center")
     
     
+
     ws_panels.cell(row=11 + row_counter, column=2, 
-                               value=row[2].value).alignment=cell_alignment
+                   value=item_value).alignment=cell_alignment
     ws_panels.cell(row=11 + row_counter, column=4,
-                   value=row[3].value).alignment = cell_alignment
+                   value=name_value).alignment = cell_alignment
     ws_panels.cell(row=11 + row_counter, column=10,
-                   value=row[4].value).alignment = cell_alignment
+                   value=qty_value).alignment = cell_alignment
 
     ws_panels.cell(row=11 + row_counter, column=2).border = thin_border
     ws_panels.cell(row=11 + row_counter, column=3).border = thin_border
@@ -69,20 +88,19 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     ws_panels.cell(row=11 + row_counter, column=11).border = thin_border
     ws_panels.cell(row=11 + row_counter, column=12).border = thin_border
 
-
-    if (str(row[2].value).__contains__("S")):
+    if item_value.__contains__("S"):
         id_line = 1
-
-    if (str(row[2].value)[0:3] == "503"):
-        id_line = 2        
         
-    if (str(row[2].value)[0:3] == "506"):
+    elif item_value[0:3] == "503":
+        id_line = 2
+       
+    elif item_value[0:3] == "506":
         id_line = 3
 
-    if (str(row[2].value)[0:2] != "50"):
+    elif item_value[0:2] != "50":
         id_line = 5
 
-    if (str(row[2].value)[0:3] == "500") and not (str(row[2].value).__contains__("S")):
+    elif item_value[0:3] == "500" and not item_value.__contains__("S"):
         id_line = 6
 
     if (id_line%2 != 0):
@@ -101,10 +119,10 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     row_counter = row_counter + 1
 
     try:
-        wb_panels.save(f"{row[0].value}-{row[1].value}-PANELES.xlsx")
+        wb_panels.save(f"{co_value}-{line_value}-PANELES.xlsx")
 
     except:
-        print(f"{row[0].value}-{row[1].value} --- ERROR")
+        print(f"{co_value}-{line_value} --- ERROR")
     
     
 elapsed_time = time.time() - starting_point
