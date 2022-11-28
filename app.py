@@ -11,9 +11,13 @@ def fileSelection():
     file_path = filedialog.askopenfilename()
     return file_path
 
-excel = fileSelection()
 
-wb = load_workbook(excel)
+try:
+    excel = fileSelection()
+    wb = load_workbook(fileSelection)
+except:
+    print("ERROR - PROCESS CANCELED")
+    quit()
 
 # grab the active worksheet
 ws = wb.active
@@ -23,9 +27,6 @@ line = 0
 qty = 0
 row_counter = 0
 id_line = 0
-
-
-panels_array = []
 
 starting_point = time.time()
 
