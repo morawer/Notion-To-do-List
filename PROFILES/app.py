@@ -4,6 +4,7 @@ from openpyxl.styles import Alignment, PatternFill, Font
 import time
 import tkinter as tk 
 from tkinter import filedialog
+import msvcrt
 
 def fileSelection():
     root = tk.Tk()
@@ -136,3 +137,6 @@ elapsed_time_seconds = elapsed_time_int % 60
 
 print(f"TOTAL = {qty}")
 print(f"Done in {elapsed_time_minutes:.0f} minutes and {elapsed_time_seconds} seconds.")
+print()
+print("Press any button to exit")
+msvcrt.getch()
