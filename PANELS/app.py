@@ -4,7 +4,7 @@ from openpyxl.styles import Alignment, PatternFill, Font
 import time
 import tkinter as tk 
 from tkinter import filedialog
-import msvcrt
+#import msvcrt
 
 def fileSelection():
     root = tk.Tk()
@@ -12,24 +12,85 @@ def fileSelection():
     file_path = filedialog.askopenfilename()
     return file_path
 
+def acum_lines():
+    
+    try:
+        excel = fileSelection()
+        wb = load_workbook(excel)
+        ws = wb.active
 
-try:
-    excel = fileSelection()
-    wb = load_workbook(excel)
-except:
-    print("ERROR - PROCESS CANCELED")
-    quit()
+
+    except:
+        print("ERROR - PROCESS CANCELED")
+        quit()
+    
+    
+    acum = 0
+    acum_total = 0
+    row_number = 2
+    
+    first = True
+    
+    while acum != 0 or first == True:
+        
+        if first == False:
+            wb = load_workbook(
+                "/home/dani/Projects/To_do_List_Excel/NUEVO-PANELES.xlsx")
+            ws = wb.active
+            acum = 0
+    
+        for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
+        
+            co = ws.cell(row=row_number, column=1).value
+            next_co = ws.cell(row=row_number+1, column=1).value
+        
+            line = ws.cell(row=row_number, column=2).value
+            next_line = ws.cell(row=row_number+1, column=2).value
+
+            item = ws.cell(row=row_number, column=3).value
+            next_item = ws.cell(row=row_number+1, column=3).value
+
+            qty = ws.cell(row=row_number, column=5).value
+            next_qty = ws.cell(row=row_number+1, column=5).value
+                    
+            print(row_number)
+        
+            if (co == next_co) and (line == next_line) and (item == next_item):
+                try:
+                    ws.cell(row=row_number, column=5,
+                           value=qty + next_qty)
+                    ws.delete_rows(idx=row_number+1)
+                    acum = acum+1
+                    print('HOLA')
+                except:
+                    print("ERROR")
+            
+            row_number = row_number + 1
+            
+        wb.save(f"NUEVO-PANELES.xlsx")
+        first = False
+        acum_total = acum_total + acum
+        print("ACUM= ", acum)
+        row_number = 2
+        
+    print(acum_total)
+            
+
+starting_point = time.time()
+
+acum_lines()
+    
 
 # grab the active worksheet
+wb = load_workbook(
+    "/home/dani/Projects/To_do_List_Excel/NUEVO-PANELES.xlsx")
 ws = wb.active
-
 co = 0
 line = 0
 qty = 0
 row_counter = 0
 id_line = 0
 
-starting_point = time.time()
 
 for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     
@@ -48,7 +109,8 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
         line = row[1].value
         qty = qty + 1
 
-        wb_panels = load_workbook("Plantilla Paneles.xlsx")
+        wb_panels = load_workbook(
+            "/home/dani/Projects/To_do_List_Excel/PANELS/Plantilla Paneles.xlsx")
 
         ws_panels = wb_panels.active
         ws_panels["B2"].value = f"{co}-{line}"
@@ -136,4 +198,4 @@ print(f"TOTAL = {qty}")
 print(f"Done in {elapsed_time_minutes:.0f} minutes and {elapsed_time_seconds} seconds.")
 print()
 print("Press any button to exit")
-msvcrt.getch()
+#msvcrt.getch()
