@@ -16,7 +16,6 @@ def file_selection():
 
 
 def acum_lines():
-    global wb, ws
     try:
         excel = file_selection()
         wb = load_workbook(excel)
@@ -37,7 +36,7 @@ def acum_lines():
 
         if not first:
             wb = load_workbook(
-                "/home/dani/Projects/To_do_List_Excel/NUEVO-PANELES.xlsx")
+                "/home/dani/Projects/To_do_List_Excel/PANELS/NUEVO-PANELES.xlsx")
             ws = wb.active
             acum = 0
 
@@ -55,7 +54,7 @@ def acum_lines():
             qty = ws.cell(row=row_number, column=5).value
             next_qty = ws.cell(row=row_number + 1, column=5).value
 
-            print(row_number)
+            
 
             if (co == next_co) and (line == next_line) and (item == next_item):
                 try:
@@ -63,9 +62,10 @@ def acum_lines():
                             value=qty + next_qty)
                     ws.delete_rows(idx=row_number + 1)
                     acum = acum + 1
-                    print('HOLA')
+                    print(f'Line {row_number} accumulated and deleted')
                 except:
-                    print("ERROR")
+                    print(f"Line {row_number}: ERROR")
+                    break
 
             row_number = row_number + 1
 
@@ -84,7 +84,7 @@ acum_lines()
 
 # grab the active worksheet
 wb = load_workbook(
-    "/home/dani/Projects/To_do_List_Excel/NUEVO-PANELES.xlsx")
+    "/home/dani/Projects/To_do_List_Excel/PANELS/NUEVO-PANELES.xlsx")
 ws = wb.active
 co = 0
 line = 0
@@ -139,7 +139,6 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     if (title and last_value == 0) or (last_value[0:3] != new_value[0:3]) or (
             new_value.__contains__("S") and not last_value.__contains__("S")) or (
             last_value.__contains__("S") and not new_value.__contains__("S")):
-        # TODO: Make titles for each new block of items
 
         ws_panels.merge_cells(start_row=11 + row_counter,
                               start_column=2, end_row=11 + row_counter, end_column=12)
