@@ -90,6 +90,11 @@ line = 0
 qty = 0
 row_counter = 0
 id_line = 0
+row_line = 2
+
+title = True
+last_value = 0
+new_value = 0
 
 
 for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
@@ -100,6 +105,21 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
 
     co_value = row[0].value
     line_value = row[1].value
+    
+    next_co = ws.cell(row=row_line + 1, column=1).value
+    next_line = ws.cell(row=row_line + 1, column=2).value
+    
+    new_value = item_value
+    
+    thin_border = Border(left=Side(style='thin'),
+                         right=Side(style='thin'),
+                         top=Side(style='thin'),
+                         bottom=Side(style='thin'))
+
+    my_fill = PatternFill(start_color="d3d3d3",
+                          end_color="d3d3d3", fill_type="solid")
+
+    cell_alignment = Alignment(horizontal="center", vertical="center")
     
     if (co_value != co or line_value != line):
 
@@ -114,24 +134,65 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
 
         ws_panels = wb_panels.active
         ws_panels["B2"].value = f"{co}-{line}"
+        
         row_counter = 0
         
+    if (title and last_value == 0) or (last_value[0:3] != new_value[0:3]) or (new_value.__contains__("S") and not last_value.__contains__("S")) or (last_value.__contains__("S") and not new_value.__contains__("S")):
+        #TODO: Make titles for each new block of items
+             
+        ws_panels.merge_cells(start_row=11 + row_counter,
+                              start_column=2, end_row=11 + row_counter, end_column=12)
+        
+        if new_value[0:3] == "500" and not item_value.__contains__("S"):
+            ws_panels.cell(row=11 + row_counter, column=2,
+                           value="PANELES GENIOX").alignment = cell_alignment
+            ws_panels.cell(row=11 + row_counter, column=2).fill = my_fill
+
+            title = False
+            last_value = new_value
+        
+        elif new_value[0:3] == "503":
+            ws_panels.cell(row=11 + row_counter, column=2,
+                           value="PUERTAS GENIOX").alignment = cell_alignment
+            ws_panels.cell(row=11 + row_counter, column=2).fill = my_fill
+
+            title = False
+            last_value = new_value
+
+        
+        elif new_value[0:3] == "506":
+            ws_panels.cell(row=11 + row_counter, column=2,
+                           value="PANELES PISO INTERMEDIO").alignment = cell_alignment
+            ws_panels.cell(row=11 + row_counter, column=2).fill = my_fill
+
+            title = False
+            last_value = new_value
+
+            
+        elif new_value.__contains__("S"):
+            ws_panels.cell(row=11 + row_counter, column=2,
+                           value="PANELES GX ON").alignment = cell_alignment
+            ws_panels.cell(row=11 + row_counter, column=2).fill = my_fill
+
+            title = False
+            last_value = new_value
+
+            
+        else:
+            ws_panels.cell(row=11 + row_counter, column=2,
+                           value="PANELES ESPECIALES").alignment = cell_alignment
+            ws_panels.cell(row=11 + row_counter, column=2).fill = my_fill
+
+            title = False
+            last_value = new_value
+            
+        row_counter = row_counter + 1
+         
     ws_panels.merge_cells(start_row=11 + row_counter,
                           start_column=2, end_row=11 + row_counter, end_column=3)
     
     ws_panels.merge_cells(start_row=11 + row_counter,
                           start_column=4, end_row=11 + row_counter, end_column=9)
-
-    thin_border = Border(left=Side(style='thin'),
-                         right=Side(style='thin'),
-                         top=Side(style='thin'),
-                         bottom=Side(style='thin'))
-
-    my_fill = PatternFill(start_color="d3d3d3", end_color="d3d3d3", fill_type="solid")
-    
-    cell_alignment = Alignment(horizontal="center", vertical="center")
-    
-    
 
     ws_panels.cell(row=11 + row_counter, column=2, 
                    value=item_value).alignment=cell_alignment
@@ -151,42 +212,23 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     ws_panels.cell(row=11 + row_counter, column=10).border = thin_border
     ws_panels.cell(row=11 + row_counter, column=11).border = thin_border
     ws_panels.cell(row=11 + row_counter, column=12).border = thin_border
-
-    if item_value.__contains__("S"):
-        id_line = 1
-        
-    elif item_value[0:3] == "503":
-        id_line = 2
-       
-    elif item_value[0:3] == "506":
-        id_line = 3
-
-    elif item_value[0:2] != "50":
-        id_line = 5
-
-    elif item_value[0:3] == "500" and not item_value.__contains__("S"):
-        id_line = 6
-
-    if (id_line%2 != 0):
-        ws_panels.cell(row=11 + row_counter, column=2).fill= my_fill
-        ws_panels.cell(row=11 + row_counter, column=3).fill= my_fill
-        ws_panels.cell(row=11 + row_counter, column=4).fill= my_fill
-        ws_panels.cell(row=11 + row_counter, column=5).fill= my_fill
-        ws_panels.cell(row=11 + row_counter, column=6).fill= my_fill
-        ws_panels.cell(row=11 + row_counter, column=7).fill= my_fill
-        ws_panels.cell(row=11 + row_counter, column=8).fill= my_fill
-        ws_panels.cell(row=11 + row_counter, column=9).fill= my_fill
-        ws_panels.cell(row=11 + row_counter, column=10).fill= my_fill
-        ws_panels.cell(row=11 + row_counter, column=11).fill= my_fill
-        ws_panels.cell(row=11 + row_counter, column=12).fill= my_fill
         
     row_counter = row_counter + 1
+    
+    print(f"{co} == {line} || {next_co} == {next_line}")
 
-    try:
-        wb_panels.save(f"{co_value}-{line_value}-PANELES.xlsx")
+    if (co_value != next_co or line_value != line):
+        
+        try:
+            print(f"{co_value}-{line_value}-PANELES.xlsx")
+            wb_panels.save(f"{co_value}-{line_value}-PANELES.xlsx")
+        
+            new_value = 0
 
-    except:
-        print(f"{co_value}-{line_value} --- ERROR")
+        except:
+            print(f"{co_value}-{line_value} --- ERROR")
+    
+    row_line= row_line + 1
     
     
 elapsed_time = time.time() - starting_point
