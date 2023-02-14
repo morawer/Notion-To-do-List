@@ -4,9 +4,21 @@ from openpyxl.styles import Alignment, PatternFill
 import time
 import tkinter as tk
 from tkinter import filedialog
+import datetime
+import os
 
 
-# import msvcrt
+date_now = datetime.datetime.now()
+year = date_now.year
+month = date_now.month
+day = date_now.day
+
+path = f"U:/OPERACIONES/08 FÁBRICA/03 AUTOMATIZACIÓN LISTAS DE PANELES/{year}_{month}_{day}/"
+
+def check_folder(day, month, year):
+    if not os.path.exists(f"{path}"):
+        os.makedirs(path)
+
 
 def file_selection():
     root = tk.Tk()
@@ -35,8 +47,7 @@ def acum_lines():
     while acum != 0 or first:
 
         if not first:
-            wb = load_workbook(
-                "/home/dani/Projects/To_do_List_Excel/PANELS/NUEVO-PANELES.xlsx")
+            wb = load_workbook("U:/OPERACIONES/08 FÁBRICA/03 AUTOMATIZACIÓN LISTAS DE PANELES/NUEVO-PANELES.xlsx")
             ws = wb.active
             acum = 0
 
@@ -69,7 +80,7 @@ def acum_lines():
 
             row_number = row_number + 1
 
-        wb.save(f"NUEVO-PANELES.xlsx")
+        wb.save(f"U:/OPERACIONES/08 FÁBRICA/03 AUTOMATIZACIÓN LISTAS DE PANELES/NUEVO-PANELES.xlsx")
         first = False
         acum_total = acum_total + acum
         print("ACUM= ", acum)
@@ -80,11 +91,12 @@ def acum_lines():
 
 starting_point = time.time()
 
+check_folder(day, month, year)
 acum_lines()
 
 # grab the active worksheet
 wb = load_workbook(
-    "/home/dani/Projects/To_do_List_Excel/PANELS/NUEVO-PANELES.xlsx")
+    "U:/OPERACIONES/08 FÁBRICA/03 AUTOMATIZACIÓN LISTAS DE PANELES/NUEVO-PANELES.xlsx")
 ws = wb.active
 co = 0
 line = 0
@@ -129,7 +141,7 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
         qty = qty + 1
 
         wb_panels = load_workbook(
-            "/home/dani/Projects/To_do_List_Excel/PANELS/Plantilla Paneles.xlsx")
+            "U:/OPERACIONES/08 FÁBRICA/0 PROGRAMAS AUTOMATIZACIÓN/PROGRAMA CREADOR LISTAS PANELES/Plantilla Paneles.xlsx")
 
         ws_panels = wb_panels.active
         ws_panels["B2"].value = f"{co}-{line}"
@@ -215,13 +227,11 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
 
     row_counter = row_counter + 1
 
-    print(f"{co} == {line} || {next_co} == {next_line}")
-
     if co_value != next_co or line != next_line:
 
         try:
             print(f"{co_value}-{line_value}-PANELES.xlsx")
-            wb_panels.save(f"{co_value}-{line_value}-PANELES.xlsx")
+            wb_panels.save(f"{path}/{co_value}-{line_value}-PANELES.xlsx")
 
             new_value = 0
 
