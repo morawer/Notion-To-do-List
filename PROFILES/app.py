@@ -4,10 +4,20 @@ from openpyxl.styles import Alignment, PatternFill
 import time
 import tkinter as tk
 from tkinter import filedialog
+import msvcrt
+import datetime
+import os
 
+date_now = datetime.datetime.now()
+year = date_now.year
+month = date_now.month
+day = date_now.day
 
-# import msvcrt
+path = f"U:/OPERACIONES/08 FÁBRICA/05 AUTOMATIZACIÓN LISTAS DE PERFILES/{year}_{month}_{day}/"
 
+def check_folder(day, month, year):
+    if not os.path.exists(f"{path}"):
+        os.makedirs(path)
 
 def file_selection():
     root = tk.Tk()
@@ -37,7 +47,7 @@ def acum_lines():
 
         if not first:
             wb = load_workbook(
-                "/home/dani/Projects/To_do_List_Excel/PROFILES/NUEVO-PERFILES.xlsx")
+                "U:/OPERACIONES/08 FÁBRICA/05 AUTOMATIZACIÓN LISTAS DE PERFILES/NUEVO-PERFILES.xlsx")
             ws = wb.active
             acum = 0
 
@@ -68,7 +78,7 @@ def acum_lines():
 
             row_number = row_number + 1
 
-        wb.save(f"/home/dani/Projects/To_do_List_Excel/PROFILES/NUEVO-PERFILES.xlsx")
+        wb.save(f"U:/OPERACIONES/08 FÁBRICA/05 AUTOMATIZACIÓN LISTAS DE PERFILES/NUEVO-PERFILES.xlsx")
         first = False
         acum_total = acum_total + acum
         print("ACUM= ", acum)
@@ -79,11 +89,12 @@ def acum_lines():
 
 starting_point = time.time()
 
+check_folder(day, month, year)
 acum_lines()
 
 # grab the active worksheet
 wb = load_workbook(
-    "/home/dani/Projects/To_do_List_Excel/PROFILES/NUEVO-PERFILES.xlsx")
+    "U:/OPERACIONES/08 FÁBRICA/05 AUTOMATIZACIÓN LISTAS DE PERFILES/NUEVO-PERFILES.xlsx")
 ws = wb.active
 
 co = 0
@@ -97,12 +108,21 @@ title = True
 last_value = 0
 new_value = 0
 
+distance = {"490": "25",
+            "491": "25",
+            "492": "24",
+            "493": "25",
+            }
+
 for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
 
     item_value = str(row[2].value)
     name_value = row[3].value
     qty_value = row[4].value
-    distance_value = row[9].value
+    try:
+        distance_value = distance[item_value[0:3]]
+    except:
+        distance_value = "n/a"
 
     co_value = row[0].value
     line_value = row[1].value
@@ -130,7 +150,7 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
         qty = qty + 1
 
         wb_profiles = load_workbook(
-            "/home/dani/Projects/To_do_List_Excel/PROFILES/Plantilla Perfiles.xlsx")
+            "U:/OPERACIONES/08 FÁBRICA/0 PROGRAMAS AUTOMATIZACIÓN/PROGRAMA CREADOR LISTAS PERFILES/Plantilla Perfiles.xlsx")
 
         ws_profiles = wb_profiles.active
         ws_profiles["B2"].value = f"{co}-{line}"
@@ -189,7 +209,7 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
     ws_profiles.cell(row=11 + row_counter, column=10,
                      value=qty_value).alignment = cell_alignment
     ws_profiles.cell(row=11 + row_counter, column=11,
-                     value=distance_value[0:2]).alignment = cell_alignment
+                     value=distance_value).alignment = cell_alignment
 
     ws_profiles.cell(row=11 + row_counter, column=2).border = thin_border
     ws_profiles.cell(row=11 + row_counter, column=3).border = thin_border
@@ -209,7 +229,7 @@ for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
 
         try:
             print(f"{co_value}-{line_value}-PERFILES.xlsx")
-            wb_profiles.save(f"{co_value}-{line_value}-PERFILES.xlsx")
+            wb_profiles.save(f"{path}/{co_value}-{line_value}-PERFILES.xlsx")
 
         except:
             print(f"{co_value}-{line_value} --- ERROR")
@@ -225,4 +245,4 @@ print(f"TOTAL = {qty}")
 print(f"Done in {elapsed_time_minutes:.0f} minutes and {elapsed_time_seconds} seconds.")
 print()
 print("Press any button to exit")
-# msvcrt.getch()
+msvcrt.getch()
