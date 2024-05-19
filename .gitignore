@@ -2,3 +2,9 @@ Listas de paneles.zip
 *PERFILES.xlsx
 *PANELES.xlsx
 .idea/
+/build
+/dist
+/PANELS/build/
+/PROFILES/build
+NOTION-TO-DO-LIST/PANELS/dist/
+
